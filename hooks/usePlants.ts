@@ -12,9 +12,14 @@ export const useSpottedPlants = () => {
 	}, [data]);
 
 	const addPlant = async (id: string, record: Spotting) => {
-		await AsyncStorage.setItem(`plant-${id}`, JSON.stringify(record));
-		const currentData = data || [];
-		setData([...currentData, id]);
+		const existingPlant = await AsyncStorage.getItem(`plant-${id}`);
+		const isNew = existingPlant == null;
+
+		if (isNew) {
+			await AsyncStorage.setItem(`plant-${id}`, JSON.stringify(record));
+			const currentData = data || [];
+			setData([...currentData, id]);
+		}
 	};
 
 	return {

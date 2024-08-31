@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { CameraView, type CameraType, useCameraPermissions } from "expo-camera";
 import Stack from "expo-router/stack";
 import { TouchableOpacity, View, Image } from "react-native";
@@ -8,10 +8,10 @@ import { ScanEye } from "~/lib/icons/ScanEye";
 import { SwitchCamera } from "~/lib/icons/SwitchCamera";
 import { Loader } from "~/lib/icons/Loader";
 import { identifyPlant } from "~/services/plants";
-import { useAuth } from "@clerk/clerk-expo";
 import Toast from "react-native-root-toast";
 import { router } from "expo-router";
 import { useSpottedPlants } from "~/hooks/usePlants";
+import { useLocation } from "~/hooks/useLocation";
 
 const PlantCameraScreen = () => {
 	const [facing, setFacing] = useState<CameraType>("back");
@@ -20,6 +20,17 @@ const PlantCameraScreen = () => {
 
 	const cameraRef = useRef<CameraView>(null);
 	const { addPlant } = useSpottedPlants();
+	const { location, errorMsg } = useLocation();
+
+	if (!location) {
+		return (
+			<View className="flex-col flex-1 justify-center items-center gap-4 p-4">
+				<Text className="inline px-12 text-center">
+					{errorMsg ?? "Please allow location access to continue."}
+				</Text>
+			</View>
+		);
+	}
 
 	if (!permission) {
 		// Camera permissions are still loading.
@@ -55,8 +66,8 @@ const PlantCameraScreen = () => {
 				...plant,
 				userPhoto: capturedImage,
 				location: "",
-				locationLatitude: 0,
-				locationLongitude: 0,
+				locationLatitude: location.coords.latitude,
+				locationLongitude: location.coords.longitude,
 				userNote: "",
 			});
 			router.replace(`/plants/${plant.id}`);

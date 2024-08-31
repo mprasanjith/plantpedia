@@ -120,7 +120,7 @@ const PlantDetailScreen: React.FC = () => {
 						/>
 						<View className="flex-row items-center mb-2">
 							<MapPin size={16} color="#4B5563" />
-							<Text className="ml-1">{plant.location}</Text>
+							<Text className="ml-1">{plant.locationLatitude}, {plant.locationLongitude}</Text>
 						</View>
 						{isEditing ? (
 							<Input
