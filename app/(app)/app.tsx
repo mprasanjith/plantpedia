@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { View } from "react-native";
-import { Input } from "~/components/ui/input";
 import Stack from "expo-router/stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PlantpediaGrid } from "~/components/plants-grid";
@@ -10,8 +9,6 @@ import { ScanEye } from "~/lib/icons/ScanEye";
 import { Text } from "~/components/ui/text";
 
 const PlantsListScreen = () => {
-	const [searchQuery, setSearchQuery] = useState("");
-
 	return (
 		<GestureHandlerRootView className="flex-1">
 			<View className="flex-1 p-4">
@@ -31,13 +28,6 @@ const PlantsListScreen = () => {
 							</Link>
 						),
 					}}
-				/>
-
-				<Input
-					placeholder="Search plants..."
-					value={searchQuery}
-					onChangeText={setSearchQuery}
-					className="mb-4"
 				/>
 
 				<PlantpediaGrid />

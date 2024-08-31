@@ -11,6 +11,7 @@ import { identifyPlant } from "~/services/plants";
 import { useAuth } from "@clerk/clerk-expo";
 import Toast from "react-native-root-toast";
 import { router } from "expo-router";
+import { useSpottedPlants } from "~/hooks/usePlants";
 
 const PlantCameraScreen = () => {
 	const [facing, setFacing] = useState<CameraType>("back");
@@ -18,8 +19,7 @@ const PlantCameraScreen = () => {
 	const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
 	const cameraRef = useRef<CameraView>(null);
-
-	const { getToken } = useAuth();
+	const { addPlant } = useSpottedPlants();
 
 	if (!permission) {
 		// Camera permissions are still loading.
@@ -51,6 +51,14 @@ const PlantCameraScreen = () => {
 
 		try {
 			const plant = await identifyPlant(capturedImage);
+			await addPlant(plant.id.toString(), {
+				...plant,
+				userPhoto: capturedImage,
+				location: "",
+				locationLatitude: 0,
+				locationLongitude: 0,
+				userNote: "",
+			});
 			router.replace(`/plants/${plant.id}`);
 		} catch (error) {
 			console.error("Failed to identify plant:", error);
@@ -65,7 +73,6 @@ const PlantCameraScreen = () => {
 		if (cameraRef.current) {
 			try {
 				const photo = await cameraRef.current.takePictureAsync();
-                console.log(photo);
 				setCapturedImage(photo.uri);
 				identifyPlantFromCapture(photo.uri);
 			} catch (error) {

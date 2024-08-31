@@ -18,7 +18,8 @@ import { MapPin } from "~/lib/icons/MapPin";
 import type { Spotting } from "~/lib/types";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { useSpotting } from "~/hooks/usePlant";
 
 const plant: Spotting = {
 	id: 1,
@@ -39,8 +40,10 @@ const plant: Spotting = {
 };
 
 const PlantDetailScreen: React.FC = () => {
+	const { id } = useLocalSearchParams();
+	const { isLoading, spotting: plant } = useSpotting(id as string);
 	const [isEditing, setIsEditing] = useState(false);
-	const [userNote, setUserNote] = useState(plant.userNote);
+	const [userNote, setUserNote] = useState("");
 
 	const handleShare = async () => {
 		try {
@@ -52,6 +55,10 @@ const PlantDetailScreen: React.FC = () => {
 			console.error("Error sharing:", error);
 		}
 	};
+
+	if (isLoading || !plant) {
+		return null;
+	}
 
 	return (
 		<ScrollView className="flex-1 bg-white">

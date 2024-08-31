@@ -1,6 +1,7 @@
 import { useAuth } from "@clerk/clerk-expo";
 import { Redirect } from "expo-router";
 import { Stack } from "expo-router/stack";
+import { DataProvider } from "~/hooks/useGlobalDataStore";
 
 export default function Layout() {
 	const { isSignedIn } = useAuth();
@@ -9,5 +10,9 @@ export default function Layout() {
 		return <Redirect href={"/"} />;
 	}
 
-	return <Stack />;
+	return (
+		<DataProvider key="spotted-ids" initialValue={[]}>
+			<Stack />
+		</DataProvider>
+	);
 }
