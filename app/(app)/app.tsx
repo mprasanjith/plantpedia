@@ -4,6 +4,10 @@ import { Input } from "~/components/ui/input";
 import Stack from "expo-router/stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PlantpediaGrid } from "~/components/plants-grid";
+import { Link } from "expo-router";
+import { Button } from "~/components/ui/button";
+import { ScanEye } from "~/lib/icons/ScanEye";
+import { Text } from "~/components/ui/text";
 
 const PlantsListScreen = () => {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -14,18 +18,18 @@ const PlantsListScreen = () => {
 				<Stack.Screen
 					options={{
 						title: "My plants",
-						// headerRight: () => (
-						// 	<Link href="/capture" asChild>
-						// 		<Button
-						// 			size="sm"
-						// 			variant="ghost"
-						// 			className="flex-row items-center gap-2 p-0"
-						// 		>
-						// 			<Text>Catch a plant</Text>
-						// 			{/* <Plus /> */}
-						// 		</Button>
-						// 	</Link>
-						// ),
+						headerRight: () => (
+							<Link href="/capture" asChild>
+								<Button
+									size="sm"
+									variant="ghost"
+									className="flex-row items-center gap-2"
+								>
+									<Text>Capture</Text>
+									<ScanEye />
+								</Button>
+							</Link>
+						),
 					}}
 				/>
 
