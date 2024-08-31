@@ -1,24 +1,16 @@
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { type Theme, ThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/hooks/useColorScheme";
 import "~/global.css";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { PortalHost } from "@rn-primitives/portal";
 import { tokenCache } from "~/lib/tokens";
-import { useEffect, useState } from "react";
 
 const LIGHT_THEME: Theme = {
 	dark: false,
 	colors: NAV_THEME.light,
-};
-const DARK_THEME: Theme = {
-	dark: true,
-	colors: NAV_THEME.dark,
 };
 
 if (!process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY) {
@@ -29,45 +21,10 @@ if (!process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY) {
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 export default function RootLayout() {
-	const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
-	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = useState(false);
-
-	useEffect(() => {
-		(async () => {
-			const theme = await AsyncStorage.getItem("theme");
-
-			if (Platform.OS === "web") {
-				// Adds the background color to the html element to prevent white background on overscroll.
-				document.documentElement.classList.add("bg-background");
-			}
-			if (!theme) {
-				AsyncStorage.setItem("theme", colorScheme);
-				setIsColorSchemeLoaded(true);
-				return;
-			}
-			const colorTheme = theme === "dark" ? "dark" : "light";
-			if (colorTheme !== colorScheme) {
-				if (setColorScheme) {
-					setColorScheme(colorTheme);
-				}
-
-				setIsColorSchemeLoaded(true);
-				return;
-			}
-			setIsColorSchemeLoaded(true);
-		})().finally(() => {
-			SplashScreen.hideAsync();
-		});
-	}, [colorScheme, setColorScheme]);
-
-	if (!isColorSchemeLoaded) {
-		return null;
-	}
-
 	return (
 		<RootSiblingParent>
-			<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-				<StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+			<ThemeProvider value={LIGHT_THEME}>
+				<StatusBar style={"light"} />
 				<ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
 					<ClerkLoaded>
 						<Slot />
