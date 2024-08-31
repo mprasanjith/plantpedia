@@ -1,42 +1,52 @@
-import React, { useState } from "react";
 import {
 	View,
 	Text,
 	Image,
 	ScrollView,
-	TouchableOpacity,
 	Share,
+	TouchableOpacity,
 } from "react-native";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { MapPin } from "~/lib/icons/MapPin";
-import { Edit } from "~/lib/icons/Edit";
 import { Share as ShareIcon } from "~/lib/icons/Share";
+import { Leaf } from "~/lib/icons/Leaf";
+import { Repeat } from "~/lib/icons/Repeat";
+import { Home } from "~/lib/icons/Home";
+import { Activity } from "~/lib/icons/Activity";
+import { Edit } from "~/lib/icons/Edit";
+import { MapPin } from "~/lib/icons/MapPin";
+import type { Spotting } from "~/lib/types";
+import { useState } from "react";
 import { Input } from "~/components/ui/input";
-import Stack from "expo-router/stack";
+import { Stack } from "expo-router";
 
-const PlantDetailScreen = () => {
-	const plant = {
-		id: "1",
-		name: "Plant 1",
-		image: "https://example.com/plant1.jpg",
-		scientificName: "Plant 1 Scientific Name",
-		family: "Plant 1 Family",
-		nativeTo: "Plant 1 Native To",
-		type: "Plant 1 Type",
-		careLevel: "Plant 1 Care Level",
-		userPhoto: "https://example.com/plant1-user-photo.jpg",
-		location: "Plant 1 Location",
-		userNote: "Plant 1 User Note",
-	};
+const plant: Spotting = {
+	id: 1,
+	commonName: "Plant 1",
+	image: "https://example.com/plant1.jpg",
+	thumbnail: "https://example.com/plant1-thumbnail.jpg",
+	scientificName: "Plant 1 Scientific Name",
+	type: "Plant 1 Type",
+	cycle: "Plant 1 Cycle",
+	indoor: true,
+	description: "Plant 1 Description",
+	careLevel: "Plant 1 Care Level",
+	locationLatitude: 0,
+	locationLongitude: 0,
+	userPhoto: "https://example.com/plant1-user-photo.jpg",
+	location: "Plant 1 Location",
+	userNote: "Plant 1 User Note",
+};
 
+const PlantDetailScreen: React.FC = () => {
 	const [isEditing, setIsEditing] = useState(false);
+	const [userNote, setUserNote] = useState(plant.userNote);
 
 	const handleShare = async () => {
 		try {
 			await Share.share({
-				message: `Check out this ${plant.name} I found using Plantpedia!`,
-				url: plant.image, // This might not work on all platforms, consider using a deep link instead
+				message: `Check out ${plant.commonName} (${plant.scientificName}) on Plantpedia!`,
+				url: plant.image, // Consider using a deep link to your app instead
 			});
 		} catch (error) {
 			console.error("Error sharing:", error);
@@ -47,14 +57,14 @@ const PlantDetailScreen = () => {
 		<ScrollView className="flex-1 bg-white">
 			<Stack.Screen
 				options={{
-					title: plant.name,
+					title: plant.commonName,
 				}}
 			/>
 
 			<Image source={{ uri: plant.image }} className="w-full h-64" />
 
 			<View className="p-4">
-				<Text className="mb-2 font-bold text-3xl">{plant.name}</Text>
+				<Text className="mb-2 font-bold text-3xl">{plant.commonName}</Text>
 				<Text className="mb-4 text-gray-600 text-lg">
 					{plant.scientificName}
 				</Text>
@@ -62,10 +72,30 @@ const PlantDetailScreen = () => {
 				<Card className="mb-4">
 					<CardContent className="p-4">
 						<Text className="mb-2 font-semibold">Plant Information</Text>
-						<Text className="mb-1">Family: {plant.family}</Text>
-						<Text className="mb-1">Native to: {plant.nativeTo}</Text>
-						<Text className="mb-1">Type: {plant.type}</Text>
-						<Text>Care Level: {plant.careLevel}</Text>
+						<View className="flex-row items-center mb-2">
+							<Leaf size={20} className="mr-2 text-green-600" />
+							<Text>Type: {plant.type}</Text>
+						</View>
+						<View className="flex-row items-center mb-2">
+							<Repeat size={20} className="mr-2 text-blue-600" />
+							<Text>Cycle: {plant.cycle}</Text>
+						</View>
+						<View className="flex-row items-center mb-2">
+							<Home size={20} className="mr-2 text-purple-600" />
+							<Text>Indoor: {plant.indoor ? "Yes" : "No"}</Text>
+						</View>
+
+						<View className="flex-row items-center mb-2">
+							<Activity size={20} className="mr-2 text-red-600" />
+							<Text>Care Level: {plant.careLevel}</Text>
+						</View>
+					</CardContent>
+				</Card>
+
+				<Card className="mb-4">
+					<CardContent className="p-4">
+						<Text className="mb-2 font-semibold">Description</Text>
+						<Text>{plant.description}</Text>
 					</CardContent>
 				</Card>
 
@@ -89,14 +119,12 @@ const PlantDetailScreen = () => {
 							<Input
 								multiline
 								numberOfLines={4}
-								className="border-gray-300 p-2 border rounded-md"
-								value={plant.userNote}
-								onChangeText={(text) => {
-									/* Update note logic here */
-								}}
+								className="border-gray-300 p-2 border rounded-md h-48"
+								value={userNote}
+								onChangeText={setUserNote}
 							/>
 						) : (
-							<Text>{plant.userNote}</Text>
+							<Text>{userNote}</Text>
 						)}
 					</CardContent>
 				</Card>

@@ -1,18 +1,9 @@
-import React, { useMemo, useState } from "react";
-import { View, FlatList, Image, Animated } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
-import { Text } from "~/components/ui/text";
+import React, { useState } from "react";
+import { View } from "react-native";
 import { Input } from "~/components/ui/input";
 import Stack from "expo-router/stack";
-import {
-	GestureHandlerRootView,
-	Swipeable,
-} from "react-native-gesture-handler";
-import { useAuth } from "@clerk/clerk-expo";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PlantpediaGrid } from "~/components/plants-grid";
-
 
 const PlantsListScreen = () => {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -44,8 +35,8 @@ const PlantsListScreen = () => {
 					onChangeText={setSearchQuery}
 					className="mb-4"
 				/>
-				
-                <PlantpediaGrid />
+
+				<PlantpediaGrid />
 			</View>
 		</GestureHandlerRootView>
 	);
