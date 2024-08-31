@@ -4,7 +4,7 @@ import { PlantTile } from "./plant-tile";
 
 export const PlantpediaGrid = () => {
 	// This would typically come from your data source
-	const generatePlantData = useCallback((count) => {
+	const generatePlantData = useCallback((count: number) => {
 		return Array.from({ length: count }, (_, index) => ({
 			id: index.toString(),
 			name: `Plant ${index + 1}`,
